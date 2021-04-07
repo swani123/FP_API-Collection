@@ -1,0 +1,565 @@
+{
+	"info": {
+		"_postman_id": "e95b35ee-5075-4543-89f5-f75d232e7d98",
+		"name": "JenkinsAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "IndividualTotalExpR3_Primary Copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "40b66a5e-6105-417f-94df-5943d2e90aae",
+						"exec": [
+							"//Input fields list for primary IndividualTotalExp and primary FamilyTotalExp:",
+							"pm.globals.set(\"birthDate\", \"01-1955\");",
+							"pm.globals.set(\"retirementYear\", \"01-2015\");",
+							"pm.globals.set(\"lifeExpectancy\", 70);",
+							"pm.globals.set(\"healthProfile\", '2');",
+							"pm.globals.set(\"state\", 'Colorado');",
+							"pm.globals.set(\"retirementState\", 'Colorado');",
+							"pm.globals.set(\"zipcode\", '80112');",
+							"pm.globals.set(\"dental\", 'false');",
+							"pm.globals.set(\"dentalHealthGrade\", '2');",
+							"pm.globals.set(\"singleVsMultipleMagi\", 'false'); //If this field is true the request will consider the values in the \"yearWiseMagiDetailList\" field. If the field is false the request will consider the values in the \"magiTier\" field. ",
+							"pm.globals.set(\"magiTierVsDollarAmount\", 'false'); //If this field is true the request will consider the values in the \"magiDollarAmount\" field. If the field is false it will consider the \"magiTier\" field values.",
+							"pm.globals.set(\"magiTier\", '1');",
+							"pm.globals.set(\"taxFilingStatus\", 'FILING_INDIVIDUALLY');",
+							"pm.globals.set(\"magiDollarAmount\", '80000');",
+							"pm.globals.set(\"tobacco\", 'false');",
+							"pm.globals.set(\"boughtPlanA\", 'false');",
+							"pm.globals.set(\"reserveDaysUsed\", '0');",
+							"pm.globals.set(\"planType\", \"Gold\");",
+							"pm.globals.set(\"fullYearDataForLifeExpectancyYear\", 'false');",
+							"pm.globals.set(\"yearWiseMagiDetailList\", '[{\"year\":2020 , \"magiTier\": 1, \"taxFilingStatus\":\"FILING_INDIVIDUALLY\", \"magiDollarAmount\":\"65000\"}, {\"year\":2021 , \"magiTier\": 2,\"taxFilingStatus\":\"FILING_INDIVIDUALLY\", \"magiDollarAmount\":\"95000\"}, {\"year\":2022 , \"magiTier\": 3,\"taxFilingStatus\":\"FILING_INDIVIDUALLY\", \"magiDollarAmount\":\"110000\"},  {\"year\":2023 , \"magiTier\": 4,\"taxFilingStatus\":\"FILING_INDIVIDUALLY\", \"magiDollarAmount\":\"140000\"},{\"year\":2024,  \"magiTier\": 5,\"taxFilingStatus\":\"FILING_INDIVIDUALLY\", \"magiDollarAmount\":\"200000\"}, {\"year\":2025 , \"magiTier\": 6,\"taxFilingStatus\":\"FILING_INDIVIDUALLY\", \"magiDollarAmount\":\"501000\"}]');",
+							"",
+							"",
+							"//Expenses PV feilds ",
+							"var Year = new Date();",
+							"var CurrentYear = Year.getFullYear();",
+							"pm.globals.set(\"pvAsOnYear1\", CurrentYear);",
+							"pm.globals.set(\"pvAsOnYear2\", 0);",
+							"pm.globals.set(\"pvAsOnYear3\", 0);",
+							"pm.globals.set(\"discount\", '6');",
+							"pm.globals.set(\"rateOfReturn1\", '2');",
+							"pm.globals.set(\"rateOfReturn2\", '4');",
+							"pm.globals.set(\"rateOfReturn3\", '6');",
+							"pm.globals.set(\"rateOfReturn4\", '8');",
+							"",
+							"//get savings fields list:",
+							"pm.globals.set(\"expenses\", 'expenses5');",
+							"pm.globals.set(\"initalSavings\", '0');",
+							"",
+							"pm.globals.set(\"duration\", '100');",
+							"// var CurrentYear - ",
+							"",
+							"",
+							"//pm.globals.set(\"ror\", '4.5');//Investment Profile:  conservative",
+							"pm.globals.set(\"ror\", '5.5');//Investment Profile: Moderate",
+							"//pm.globals.set(\"ror\", '7.5');//Investment Profile: Aggressive",
+							"",
+							"",
+							"pm.globals.set(\"term\", 'L');",
+							"pm.globals.set(\"levelOfProtection\", '100');",
+							"",
+							"//LTC primary & Spouse fields list:",
+							"pm.globals.set(\"transactionTypeFlag\", 'false');",
+							"pm.globals.set(\"age\", '63');",
+							"pm.globals.set(\"gender\", \"M\");",
+							"pm.globals.set(\"currentLifeStyleExpenses\", '1');",
+							"pm.globals.set(\"numberOfAdultDayHealthCareLTCYears\", '2');",
+							"pm.globals.set(\"numberOfHomeCareLTCYears\", '1');",
+							"pm.globals.set(\"numberOfAssistedCareLTCYears\", '0');",
+							"pm.globals.set(\"numberOfNursingCareLTCYears\", '1');",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "225a92a0-ae56-4d82-bc7c-b75e8f2f04dd",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});  // The request has succeeded (it will show in the runner collection).",
+							"",
+							"var response = JSON.parse(responseBody); // storing the Json response in \"response\" variable",
+							"var fromYear; //declaring a variable fromyear",
+							"var toYear; //declaring a variable toyear",
+							"var pv_expenses0 = \"[\"; //declaring a variable Pv_expenses0 and assigning the \"[\" to store the array values.",
+							"var pv_expenses1 = \"[\"; //same as above.",
+							"var pv_expenses2 = \"[\"; //same as above.",
+							"var pv_expenses3 = \"[\"; //same as above.",
+							"var pv_expenses4 = \"[\"; //same as above.",
+							"var pv_expenses5 = \"[\"; //same as above.",
+							"var pv_expenses6 = \"[\"; //same as above.",
+							"var pv_expenses7 = \"[\"; //same as above.",
+							"var pv_expenses8 = \"[\"; //same as above.",
+							"var pv_expenses9 = \"[\"; //same as above.",
+							"var pv_expenses10 = \"[\"; ///same as above.",
+							"length1 = response.individualTotalExpenses.length;",
+							"//finding length from individual total exp. from response body.",
+							"fromYear = response.individualTotalExpenses[0].year; //getting the first year value from the individualTotalExpenses array from the response body.",
+							"toYear = response.individualTotalExpenses[length1 - 1].year;//getting the last year value from the individualTotalExpenses array from the response body.",
+							"console.log( \"From year is:\", fromYear);",
+							"//console.log(\"From Year is\", fromYear);",
+							"//console.log(\"To Year is\", toYear);",
+							"//printing from year and to year in the console.  ",
+							"for (var i = 0; i < length1; i++) //for loop executes a set of statement until the given condition is true, once the condition is false it will come out of the for loop. It starts with value 0 executes the statement by increments 1(ie., i++) until it is less than the value of length1.",
+							"{",
+							"    var year = response.individualTotalExpenses[i].year;",
+							"    //getting year from the response body and storing in the year based on the i value.",
+							"    var ABD = response.individualTotalExpenses[i].totalABD + response.individualTotalExpenses[i].totalPreMedicareCost;",
+							"    //getting values and adding totalABD and totalPreMedicareCost from the response body and storing in the ABD based on the i value.",
+							"    var ABCD = response.individualTotalExpenses[i].totalABCD + response.individualTotalExpenses[i].totalPreMedicareCost;",
+							"    //getting totalABCD and totalPreMedicareCost from the response body and storing in the ABCD based on the i value.",
+							"    var ABFD = response.individualTotalExpenses[i].totalABFD + response.individualTotalExpenses[i].totalPreMedicareCost;",
+							"    //getting totalABFD and totalPreMedicareCost from the response body and storing in the ABFD based on the i value.",
+							"    var ABGD = response.individualTotalExpenses[i].totalABGD + response.individualTotalExpenses[i].totalPreMedicareCost;",
+							"    //getting totalABGD and totalPreMedicareCost from the response body and storing in the ABGD based on the i value.",
+							"    var ABND = response.individualTotalExpenses[i].totalABND + response.individualTotalExpenses[i].totalPreMedicareCost;",
+							"    //getting totalABND and totalPreMedicareCost from the response body and storing in the ABND based on the i value.",
+							"    var Surcharge = response.individualTotalExpenses[i]",
+							"        .partBPremiumSurcharge + response.individualTotalExpenses[i].partDPremiumSurcharge; //getting values from the response body and adding partBPremiumSurcharge & partDPremiumSurcharge storing in the Surcharge based on the i value.",
+							"",
+							"    var year_expenseABD = '{\"year\": ' + year + ' , \"expense\": ' + ABD + \"}\"; //concatenating the year and ABD expense and storing in the year_expenseABD",
+							"    var year_expenseABCD = '{\"year\": ' + year + ' , \"expense\": ' + ABCD + \"}\"; //concatenating the year and ABCD expense and storing in the year_expenseABCD",
+							"    var year_expenseABFD = '{\"year\": ' + year + ' , \"expense\": ' + ABFD + \"}\";//concatenating the year and ABFD expense and storing in the year_expenseABFD",
+							"    var year_expenseABGD = '{\"year\": ' + year + ' , \"expense\": ' + ABGD + \"}\";//concatenating the year and ABGD expense and storing in the year_expenseABGD",
+							"    var year_expenseABND = '{\"year\": ' + year + ' , \"expense\": ' + ABND + \"}\";//concatenating the year and ABND expense and storing in the year_expenseABND",
+							"    var year_expense = '{\"year\": ' + year + ' , \"expense\": ' + Surcharge + \"}\"; //concatenating the year and Surcharge expense and storing in the year_expense.",
+							"",
+							"    var year_expensesABD = '{\"year\": ' + year + ' , \"expenses\": ' + ABD + ', \"expenses_type\": \"Post-Retirement\"}'; //concatenating the year and ABD expenses and storing in the year_expensesABD and hardcoding the \"Post-Retirement\" value in the expenses_type.",
+							"    var year_expensesABCD = '{\"year\": ' + year + ' , \"expenses\": ' + ABCD + ', \"expenses_type\": \"Post-Retirement\"}';  //concatenating the year and ABCD expenses and storing in the year_expensesABCD and hardcoding the \"Post-Retirement\" value in the expenses_type.",
+							"    var year_expensesABFD = '{\"year\": ' + year + ' , \"expenses\": ' + ABFD + ', \"expenses_type\": \"Post-Retirement\"}'; //concatenating the year and ABFD expenses and storing in the year_expensesABFD and hardcoding the \"Post-Retirement\" value in the expenses_type.",
+							"    var year_expensesABGD = '{\"year\": ' + year + ' , \"expenses\": ' + ABGD + ', \"expenses_type\": \"Post-Retirement\"}'; //concatenating the year and ABGD expenses and storing in the year_expensesABGD and hardcoding the \"Post-Retirement\" value in the expenses_type.",
+							"    var year_expensesABND = '{\"year\": ' + year + ' , \"expenses\": ' + ABND + ', \"expenses_type\": \"Post-Retirement\"}'; //concatenating the year and ABND expenses and storing in the year_expensesABND and hardcoding the \"Post-Retirement\" value in the expenses_type.",
+							"",
+							"",
+							"    if (i < (length1 - 1)) // if this condition is true then it will execute the below statment.",
+							"    {",
+							"        year_expenseABD += ','; //year_expenseABD = year_expenseABD + ',' after concatenating year and expense field assigning \",\" ",
+							"        year_expenseABCD += ','; //same as above",
+							"        year_expenseABFD += ',';// same as above",
+							"        year_expenseABGD += ',';// same as above",
+							"        year_expenseABND += ',';//same as above",
+							"        year_expensesABD += ','; //same as above",
+							"        year_expensesABCD += ',';// same as above",
+							"        year_expensesABFD += ',';// same as above",
+							"        year_expensesABGD += ',';// same as above",
+							"        year_expensesABND += ',';// same as above",
+							"        year_expense += ','; //year_expense = year_expense + ',' after concatenating year and expense field assigning \",\" ",
+							"    }",
+							"    pv_expenses0 += year_expenseABD; //variable pv_expenses0 = pv_expenses0 + year_expenseABD is stored",
+							"    pv_expenses1 += year_expenseABCD; //variable pv_expenses1 = pv_expenses1 + year_expenseABCD is stored",
+							"    pv_expenses2 += year_expenseABFD; //variable pv_expenses2 = pv_expenses2 + year_expenseABFD is stored",
+							"    pv_expenses3 += year_expenseABGD;  //variable pv_expenses3 = pv_expenses3 + year_expenseABGD is stored",
+							"    pv_expenses4 += year_expenseABND;//variable pv_expenses4 = pv_expenses4 + year_expenseABND is stored",
+							"    pv_expenses5 += year_expensesABD; //variable pv_expenses5 = pv_expenses5 + year_expensesABD is stored",
+							"    pv_expenses6 += year_expensesABCD; //variable pv_expenses6 = pv_expenses6 + year_expensesACD is stored",
+							"    pv_expenses7 += year_expensesABFD; //variable pv_expenses7 = pv_expenses7 + year_expensesABFD is stored",
+							"    pv_expenses8 += year_expensesABGD; //variable pv_expenses8 = pv_expenses8 + year_expensesABGD is stored",
+							"    pv_expenses9 += year_expensesABND; //variable pv_expenses9 = pv_expenses9 + year_expensesABND is stored",
+							"    pv_expenses10 += year_expense; //variable pv_expenses10 = pv_expenses10 + year_expense is stored ",
+							"}",
+							"pv_expenses0 += ']'; // closing with \"]\" after the above statment.",
+							"pv_expenses1 += ']'; //same as above",
+							"pv_expenses2 += ']'; //same as above",
+							"pv_expenses3 += ']'; //same as above",
+							"pv_expenses4 += ']'; //same as above",
+							"pv_expenses5 += ']'; //same as above",
+							"pv_expenses6 += ']'; //same as above",
+							"pv_expenses7 += ']'; //same as above",
+							"pv_expenses8 += ']'; //same as above",
+							"pv_expenses9 += ']'; //same as above",
+							"pv_expenses10 += ']'; //same as above",
+							"pm.globals.set(\"expenses0\", pv_expenses0); // assigning all the pv_expenses0 values to the global variable expenses0 for PV expenses",
+							"// pm.collectionVariables.set(\"expenses1\", pv_expenses1);",
+							"pm.globals.set(\"expenses1\", pv_expenses1);//same as above",
+							"pm.globals.set(\"expenses2\", pv_expenses2); //same as above",
+							"pm.globals.set(\"expenses3\", pv_expenses3); //same as above",
+							"pm.globals.set(\"expenses4\", pv_expenses4); //same as above",
+							"",
+							"pm.globals.set(\"expenses5\", pv_expenses5);//assigning all the pv_expenses5 values to the global variable expenses5 for getSaving expenses",
+							"pm.globals.set(\"expenses6\", pv_expenses6); //same as above",
+							"pm.globals.set(\"expenses7\", pv_expenses7); //same as above",
+							"pm.globals.set(\"expenses8\", pv_expenses8); //same as above",
+							"pm.globals.set(\"expenses9\", pv_expenses9); //same as above",
+							"pm.globals.set(\"expenses10\", pv_expenses10); //same as above",
+							"",
+							"pm.globals.set(\"fromYear\", fromYear);",
+							"pm.globals.set(\"toYear\", toYear);",
+							"//setting global variables fromYear and toyear.",
+							"",
+							"//printing below values in the console.",
+							"//console.log(pv_expenses0);",
+							"/*console.log(pv_expenses1);",
+							"console.log(pv_expenses2);",
+							"console.log(pv_expenses3);",
+							"console.log(pv_expenses4);",
+							"console.log(pv_expenses5);",
+							"console.log(pv_expenses6);",
+							"console.log(pv_expenses7);",
+							"console.log(pv_expenses8);",
+							"console.log(pv_expenses9);",
+							"console.log(pv_expenses10); */",
+							"",
+							"var healthProfile = response.healthGrade;",
+							"pm.globals.set(\"healthProfile\", healthProfile);",
+							"//making two fields into one field which is healthGrade is equal to healthProfile.",
+							"",
+							"var state = response.stateName;",
+							"pm.globals.set(\"state\", state);",
+							"//making two fields into one field which is stateName is equal to state.",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Basic RmluYW5jaWFsUGxhbm5lclNlcnZpY2VVc2VyOkZpbmFuY2lhbFBsYW5uZXJQQHNzdzByZA=="
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{  \n\t\"birthDate\": \"{{birthDate}}\",\n\t\"retirementYear\": \"{{retirementYear}}\",\n\t\"lifeExpectancy\":\"{{lifeExpectancy}}\",\n\t\"singleVsMultipleMagi\": \"{{singleVsMultipleMagi}}\",\n\t\"magiTierVsDollarAmount\": \"{{magiTierVsDollarAmount}}\",\n\t\"magiTier\": \"{{magiTier}}\",\n\t\"taxFilingStatus\": \"{{taxFilingStatus}}\",\n\t\"magiDollarAmount\": {{magiDollarAmount}},\n\t\"healthGrade\": {{healthProfile}},\n\t\"stateName\": \"{{state}}\",\n\t\"retirementState\": \"{{retirementState}}\",\n\t\"zipcode\": \"{{zipcode}}\",\n\t\"boughtPlanA\":\"{{boughtPlanA}}\",\n\t\"reserveDaysUsed\": {{reserveDaysUsed}},\n\t\"dental\":\"{{dental}}\",\n\t\"dentalHealthGrade\": {{dentalHealthGrade}},\n\t\"planType\": \"{{planType}}\",\n\t\"tobacco\":\"{{tobacco}}\",\n\t\"yearWiseMagiDetailList\":{{yearWiseMagiDetailList}},\n\t\"fullYearDataForLifeExpectancyYear\": {{fullYearDataForLifeExpectancyYear}}\n      }"
+				},
+				"url": {
+					"raw": "{{server}}/individualTotalExpensesR3",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"individualTotalExpensesR3"
+					]
+				},
+				"description": "All the fields to be assigned before running the collection from the pre-requisite in the individualTotalExpensesR3 API, calculating Present Value Expenses of totalABD, totalABCD, totalABFD, totalABGD, totalABND from individualTotalExpensesR3 API. They are global variables to be set in pre-request script."
+			},
+			"response": [
+				{
+					"name": "IndividualTotalExpR3 ",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic RmluYW5jaWFsUGxhbm5lclNlcnZpY2VVc2VyOkZpbmFuY2lhbFBsYW5uZXJQQHNzdzByZA=="
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{    \n\t  \"birthDate\":\"{{birthDate}}\",\n\t  \"retirementYear\":\"{{retirementYear}}\",\n\t  \"lifeExpectancy\":\"{{lifeExpectancy}}\",\n      \"planType\":\"{{planType}}\",\n      \"healthGrade\":\"{{healthGrade}}\",\n      \"stateName\":\"{{state}}\",\n      \"retirementState\":\"{{retirementState}}\",\n      \"zipcode\": {{zipcode}},\n      \"boughtPlanA\":\"{{boughtPlanA}}\",\n      \"fullYearDataForLifeExpectancyYear\": {{fullYearDataForLifeExpectancyYear}},\n      \"reserveDaysUsed\":\"{{reserveDaysUsed}}\",\n      \"dental\":\"{{dental}}\",\n      \"dentalHealthGrade\":\"{{dentalHealthGrade}}\",\n      \"tobacco\":{{tobacco}},\n\t  \"singleVsMultipleMagi\":{{singleVsMultipleMagi}},\n      \"magiTierVsDollarAmount\": {{magiTierVsDollarAmount}},\n      \"magiTier\":{{magiTier}},\n      \"taxFilingStatus\":\"{{taxFilingStatus}}\",\n      \"magiDollarAmount\":{{magiDollarAmount}},\n      \"yearWiseMagiDetailList\":{{yearWiseMagiDetailList}}\n      }"
+						},
+						"url": {
+							"raw": "{{server}}/individualTotalExpensesR3",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"individualTotalExpensesR3"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Apache-Coyote/1.1"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET,POST,PUT,DELETE"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+						},
+						{
+							"key": "Access-Control-Max-Age",
+							"value": "10"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-store, no-cache, must-revalidate, post-check=0, pre-check=0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 08 May 2020 17:08:29 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"webServiceTransactionId\": \"15082563-0170-4e1a-9a2a-3d46aa764f9c-9298\",\n    \"webServiceStatus\": \"SUCCESS\",\n    \"birthDate\": \"04-1956\",\n    \"retirementYear\": \"04-2019\",\n    \"healthGrade\": \"2\",\n    \"stateName\": \"Colorado\",\n    \"retirementState\": \"Colorado\",\n    \"zipcode\": null,\n    \"dental\": false,\n    \"dentalHealthGrade\": 2,\n    \"singleVsMultipleMagi\": true,\n    \"magiTierVsDollarAmount\": true,\n    \"lifeExpectancy\": 75,\n    \"magiTier\": 1,\n    \"taxFilingStatus\": null,\n    \"magiDollarAmount\": null,\n    \"yearWiseMagiDetailList\": [\n        {\n            \"magiTier\": 1,\n            \"magiDollarAmount\": 65000,\n            \"taxFilingStatus\": \"FILING_INDIVIDUALLY\",\n            \"year\": 2021\n        },\n        {\n            \"magiTier\": 1,\n            \"magiDollarAmount\": 87000,\n            \"taxFilingStatus\": \"FILING_INDIVIDUALLY\",\n            \"year\": 2022\n        },\n        {\n            \"magiTier\": 2,\n            \"magiDollarAmount\": 95000,\n            \"taxFilingStatus\": \"FILING_INDIVIDUALLY\",\n            \"year\": 2023\n        },\n        {\n            \"magiTier\": 2,\n            \"magiDollarAmount\": 109000,\n            \"taxFilingStatus\": \"FILING_INDIVIDUALLY\",\n            \"year\": 2024\n        },\n        {\n            \"magiTier\": 3,\n            \"magiDollarAmount\": 120000,\n            \"taxFilingStatus\": \"FILING_INDIVIDUALLY\",\n            \"year\": 2025\n        },\n        {\n            \"magiTier\": 3,\n            \"magiDollarAmount\": 136000,\n            \"taxFilingStatus\": \"FILING_INDIVIDUALLY\",\n            \"year\": 2026\n        },\n        {\n            \"magiTier\": 4,\n            \"magiDollarAmount\": 150000,\n            \"taxFilingStatus\": \"FILING_INDIVIDUALLY\",\n            \"year\": 2027\n        },\n        {\n            \"magiTier\": 4,\n            \"magiDollarAmount\": 163000,\n            \"taxFilingStatus\": \"FILING_INDIVIDUALLY\",\n            \"year\": 2028\n        },\n        {\n            \"magiTier\": 5,\n            \"magiDollarAmount\": 180000,\n            \"taxFilingStatus\": \"FILING_INDIVIDUALLY\",\n            \"year\": 2029\n        },\n        {\n            \"magiTier\": 5,\n            \"magiDollarAmount\": 500000,\n            \"taxFilingStatus\": \"FILING_INDIVIDUALLY\",\n            \"year\": 2030\n        },\n        {\n            \"magiTier\": 6,\n            \"magiDollarAmount\": 600000,\n            \"taxFilingStatus\": \"FILING_INDIVIDUALLY\",\n            \"year\": 2031\n        }\n    ],\n    \"boughtPlanA\": false,\n    \"reserveDaysUsed\": 0,\n    \"planType\": \"silver\",\n    \"tobacco\": false,\n    \"fullYearDataForLifeExpectancyYear\": false,\n    \"errorList\": [],\n    \"individualTotalExpenses\": [\n        {\n            \"year\": 2020,\n            \"monthsUsedForMedicareExpenseCalc\": 0,\n            \"partAPremium\": 0,\n            \"partBPremium\": 0,\n            \"partBPremiumSurcharge\": 0,\n            \"partCPremium\": 0,\n            \"partDPremium\": 0,\n            \"partDPremiumSurcharge\": 0,\n            \"planGPremium\": 0,\n            \"planNPremium\": 0,\n            \"partFPremium\": 0,\n            \"partAOOP\": 0,\n            \"partBOOP\": 0,\n            \"partCOOP\": 0,\n            \"partDOOP\": 0,\n            \"planGOOP\": 0,\n            \"planNOOP\": 0,\n            \"dentalPremium\": 0,\n            \"dentalOOP\": 0,\n            \"reserveDaysLeft\": 0,\n            \"totalABCD\": 0,\n            \"totalABD\": 0,\n            \"totalABFD\": 0,\n            \"totalABGD\": 0,\n            \"totalABND\": 0,\n            \"monthsUsedForPreMedicareExpenseCalc\": 12,\n            \"premium\": 8039,\n            \"outofpocket\": 6489,\n            \"totalPreMedicareCost\": 14528\n        },\n        {\n            \"year\": 2021,\n            \"monthsUsedForMedicareExpenseCalc\": 9,\n            \"partAPremium\": 0,\n            \"partBPremium\": 1379.25,\n            \"partBPremiumSurcharge\": 0,\n            \"partCPremium\": 210.25,\n            \"partDPremium\": 385.75,\n            \"partDPremiumSurcharge\": 0,\n            \"planGPremium\": 1170.36,\n            \"planNPremium\": 915.84,\n            \"partFPremium\": 1812.75,\n            \"partAOOP\": 994.3575,\n            \"partBOOP\": 1945.51,\n            \"partCOOP\": 2939.87,\n            \"partDOOP\": 501.98,\n            \"planGOOP\": 151.91,\n            \"planNOOP\": 244.73,\n            \"dentalPremium\": 0,\n            \"dentalOOP\": 0,\n            \"reserveDaysLeft\": 60,\n            \"totalABCD\": 5417.1,\n            \"totalABD\": 5206.85,\n            \"totalABFD\": 4079.73,\n            \"totalABGD\": 3589.25,\n            \"totalABND\": 3427.55,\n            \"monthsUsedForPreMedicareExpenseCalc\": 3,\n            \"premium\": 2009.75,\n            \"outofpocket\": 1622.25,\n            \"totalPreMedicareCost\": 3632\n        },\n        {\n            \"year\": 2022,\n            \"monthsUsedForMedicareExpenseCalc\": 12,\n            \"partAPremium\": 0,\n            \"partBPremium\": 1950,\n            \"partBPremiumSurcharge\": 0,\n            \"partCPremium\": 296.6,\n            \"partDPremium\": 545.47,\n            \"partDPremiumSurcharge\": 0,\n            \"planGPremium\": 1654.08,\n            \"planNPremium\": 1294.44,\n            \"partFPremium\": 2562,\n            \"partAOOP\": 0,\n            \"partBOOP\": 2671.73,\n            \"partCOOP\": 2671.73,\n            \"partDOOP\": 689.42,\n            \"planGOOP\": 208.62,\n            \"planNOOP\": 336.09,\n            \"dentalPremium\": 0,\n            \"dentalOOP\": 0,\n            \"reserveDaysLeft\": 60,\n            \"totalABCD\": 6153.22,\n            \"totalABD\": 5856.62,\n            \"totalABFD\": 5746.89,\n            \"totalABGD\": 5047.59,\n            \"totalABND\": 4815.42,\n            \"monthsUsedForPreMedicareExpenseCalc\": 0,\n            \"premium\": 0,\n            \"outofpocket\": 0,\n            \"totalPreMedicareCost\": 0\n        },\n        {\n            \"year\": 2023,\n            \"monthsUsedForMedicareExpenseCalc\": 12,\n            \"partAPremium\": 0,\n            \"partBPremium\": 2893,\n            \"partBPremiumSurcharge\": 826,\n            \"partCPremium\": 314.78,\n            \"partDPremium\": 755.85,\n            \"partDPremiumSurcharge\": 178,\n            \"planGPremium\": 1753.32,\n            \"planNPremium\": 1372.08,\n            \"partFPremium\": 2716,\n            \"partAOOP\": 0,\n            \"partBOOP\": 2751.28,\n            \"partCOOP\": 2751.28,\n            \"partDOOP\": 710.45,\n            \"planGOOP\": 214.87,\n            \"planNOOP\": 346.18,\n            \"dentalPremium\": 0,\n            \"dentalOOP\": 0,\n            \"reserveDaysLeft\": 60,\n            \"totalABCD\": 7425.36,\n            \"totalABD\": 7110.58,\n            \"totalABFD\": 7075.3,\n            \"totalABGD\": 6327.49,\n            \"totalABND\": 6077.56,\n            \"monthsUsedForPreMedicareExpenseCalc\": 0,\n            \"premium\": 0,\n            \"outofpocket\": 0,\n            \"totalPreMedicareCost\": 0\n        },\n        {\n            \"year\": 2024,\n            \"monthsUsedForMedicareExpenseCalc\": 12,\n            \"partAPremium\": 0,\n            \"partBPremium\": 3066,\n            \"partBPremiumSurcharge\": 875,\n            \"partCPremium\": 332.96,\n            \"partDPremium\": 800.72,\n            \"partDPremiumSurcharge\": 188,\n            \"planGPremium\": 1858.56,\n            \"planNPremium\": 1454.4,\n            \"partFPremium\": 2878,\n            \"partAOOP\": 0,\n            \"partBOOP\": 2834.48,\n            \"partCOOP\": 2834.48,\n            \"partDOOP\": 731.48,\n            \"planGOOP\": 221.32,\n            \"planNOOP\": 356.56,\n            \"dentalPremium\": 0,\n            \"dentalOOP\": 0,\n            \"reserveDaysLeft\": 60,\n            \"totalABCD\": 7765.64,\n            \"totalABD\": 7432.68,\n            \"totalABFD\": 7476.2,\n            \"totalABGD\": 6678.08,\n            \"totalABND\": 6409.16,\n            \"monthsUsedForPreMedicareExpenseCalc\": 0,\n            \"premium\": 0,\n            \"outofpocket\": 0,\n            \"totalPreMedicareCost\": 0\n        },\n        {\n            \"year\": 2025,\n            \"monthsUsedForMedicareExpenseCalc\": 12,\n            \"partAPremium\": 0,\n            \"partBPremium\": 4644,\n            \"partBPremiumSurcharge\": 2322,\n            \"partCPremium\": 353.05,\n            \"partDPremium\": 1162.08,\n            \"partDPremiumSurcharge\": 512,\n            \"planGPremium\": 1970.04,\n            \"planNPremium\": 1541.64,\n            \"partFPremium\": 3051,\n            \"partAOOP\": 0,\n            \"partBOOP\": 2919.52,\n            \"partCOOP\": 2919.52,\n            \"partDOOP\": 753.42,\n            \"planGOOP\": 227.96,\n            \"planNOOP\": 367.26,\n            \"dentalPremium\": 0,\n            \"dentalOOP\": 0,\n            \"reserveDaysLeft\": 60,\n            \"totalABCD\": 9832.07,\n            \"totalABD\": 9479.02,\n            \"totalABFD\": 9610.5,\n            \"totalABGD\": 8757.5,\n            \"totalABND\": 8468.4,\n            \"monthsUsedForPreMedicareExpenseCalc\": 0,\n            \"premium\": 0,\n            \"outofpocket\": 0,\n            \"totalPreMedicareCost\": 0\n        },\n        {\n            \"year\": 2026,\n            \"monthsUsedForMedicareExpenseCalc\": 12,\n            \"partAPremium\": 0,\n            \"partBPremium\": 4923,\n            \"partBPremiumSurcharge\": 2462,\n            \"partCPremium\": 375.05,\n            \"partDPremium\": 1231.69,\n            \"partDPremiumSurcharge\": 543,\n            \"planGPremium\": 2088.24,\n            \"planNPremium\": 1634.16,\n            \"partFPremium\": 3234,\n            \"partAOOP\": 0,\n            \"partBOOP\": 3006.38,\n            \"partCOOP\": 3006.38,\n            \"partDOOP\": 776.28,\n            \"planGOOP\": 234.8,\n            \"planNOOP\": 378.28,\n            \"dentalPremium\": 0,\n            \"dentalOOP\": 0,\n            \"reserveDaysLeft\": 60,\n            \"totalABCD\": 10312.4,\n            \"totalABD\": 9937.35,\n            \"totalABFD\": 10164.97,\n            \"totalABGD\": 9254.01,\n            \"totalABND\": 8943.41,\n            \"monthsUsedForPreMedicareExpenseCalc\": 0,\n            \"premium\": 0,\n            \"outofpocket\": 0,\n            \"totalPreMedicareCost\": 0\n        },\n        {\n            \"year\": 2027,\n            \"monthsUsedForMedicareExpenseCalc\": 12,\n            \"partAPremium\": 0,\n            \"partBPremium\": 6784,\n            \"partBPremiumSurcharge\": 4175,\n            \"partCPremium\": 397.06,\n            \"partDPremium\": 1657.78,\n            \"partDPremiumSurcharge\": 928,\n            \"planGPremium\": 2213.64,\n            \"planNPremium\": 1732.2,\n            \"partFPremium\": 3428,\n            \"partAOOP\": 0,\n            \"partBOOP\": 3096.9,\n            \"partCOOP\": 3096.9,\n            \"partDOOP\": 832.97,\n            \"planGOOP\": 241.84,\n            \"planNOOP\": 389.62,\n            \"dentalPremium\": 0,\n            \"dentalOOP\": 0,\n            \"reserveDaysLeft\": 60,\n            \"totalABCD\": 12768.71,\n            \"totalABD\": 12371.65,\n            \"totalABFD\": 12702.75,\n            \"totalABGD\": 11730.23,\n            \"totalABND\": 11396.57,\n            \"monthsUsedForPreMedicareExpenseCalc\": 0,\n            \"premium\": 0,\n            \"outofpocket\": 0,\n            \"totalPreMedicareCost\": 0\n        },\n        {\n            \"year\": 2028,\n            \"monthsUsedForMedicareExpenseCalc\": 12,\n            \"partAPremium\": 0,\n            \"partBPremium\": 7191,\n            \"partBPremiumSurcharge\": 4425,\n            \"partCPremium\": 420.98,\n            \"partDPremium\": 1757.62,\n            \"partDPremiumSurcharge\": 983,\n            \"planGPremium\": 2346.36,\n            \"planNPremium\": 1836.12,\n            \"partFPremium\": 3634,\n            \"partAOOP\": 0,\n            \"partBOOP\": 3190.17,\n            \"partCOOP\": 3190.17,\n            \"partDOOP\": 858.57,\n            \"planGOOP\": 249.1,\n            \"planNOOP\": 401.31,\n            \"dentalPremium\": 0,\n            \"dentalOOP\": 0,\n            \"reserveDaysLeft\": 60,\n            \"totalABCD\": 13418.34,\n            \"totalABD\": 12997.36,\n            \"totalABFD\": 13441.19,\n            \"totalABGD\": 12402.65,\n            \"totalABND\": 12044.62,\n            \"monthsUsedForPreMedicareExpenseCalc\": 0,\n            \"premium\": 0,\n            \"outofpocket\": 0,\n            \"totalPreMedicareCost\": 0\n        },\n        {\n            \"year\": 2029,\n            \"monthsUsedForMedicareExpenseCalc\": 12,\n            \"partAPremium\": 0,\n            \"partBPremium\": 9381,\n            \"partBPremiumSurcharge\": 6449,\n            \"partCPremium\": 445.85,\n            \"partDPremium\": 2257.69,\n            \"partDPremiumSurcharge\": 1437,\n            \"planGPremium\": 2487.24,\n            \"planNPremium\": 1946.28,\n            \"partFPremium\": 3852,\n            \"partAOOP\": 0,\n            \"partBOOP\": 3285.26,\n            \"partCOOP\": 3285.26,\n            \"partDOOP\": 884.18,\n            \"planGOOP\": 256.57,\n            \"planNOOP\": 413.35,\n            \"dentalPremium\": 0,\n            \"dentalOOP\": 0,\n            \"reserveDaysLeft\": 60,\n            \"totalABCD\": 16253.98,\n            \"totalABD\": 15808.13,\n            \"totalABFD\": 16374.87,\n            \"totalABGD\": 15266.68,\n            \"totalABND\": 14882.5,\n            \"monthsUsedForPreMedicareExpenseCalc\": 0,\n            \"premium\": 0,\n            \"outofpocket\": 0,\n            \"totalPreMedicareCost\": 0\n        },\n        {\n            \"year\": 2030,\n            \"monthsUsedForMedicareExpenseCalc\": 12,\n            \"partAPremium\": 0,\n            \"partBPremium\": 9944,\n            \"partBPremiumSurcharge\": 6837,\n            \"partCPremium\": 472.64,\n            \"partDPremium\": 2393.26,\n            \"partDPremiumSurcharge\": 1524,\n            \"planGPremium\": 2636.4,\n            \"planNPremium\": 2063.04,\n            \"partFPremium\": 4083,\n            \"partAOOP\": 0,\n            \"partBOOP\": 3384.01,\n            \"partCOOP\": 3384.01,\n            \"partDOOP\": 910.69,\n            \"planGOOP\": 264.27,\n            \"planNOOP\": 425.75,\n            \"dentalPremium\": 0,\n            \"dentalOOP\": 0,\n            \"reserveDaysLeft\": 60,\n            \"totalABCD\": 17104.6,\n            \"totalABD\": 16631.96,\n            \"totalABFD\": 17330.95,\n            \"totalABGD\": 16148.62,\n            \"totalABND\": 15736.74,\n            \"monthsUsedForPreMedicareExpenseCalc\": 0,\n            \"premium\": 0,\n            \"outofpocket\": 0,\n            \"totalPreMedicareCost\": 0\n        },\n        {\n            \"year\": 2031,\n            \"monthsUsedForMedicareExpenseCalc\": 3,\n            \"partAPremium\": 0,\n            \"partBPremium\": 2799.5,\n            \"partBPremiumSurcharge\": 1976,\n            \"partCPremium\": 125.34,\n            \"partDPremium\": 671.14,\n            \"partDPremiumSurcharge\": 440.75,\n            \"planGPremium\": 698.64,\n            \"planNPremium\": 546.72,\n            \"partFPremium\": 1082,\n            \"partAOOP\": 0,\n            \"partBOOP\": 871.38,\n            \"partCOOP\": 871.38,\n            \"partDOOP\": 234.53,\n            \"planGOOP\": 68.05,\n            \"planNOOP\": 109.63,\n            \"dentalPremium\": 0,\n            \"dentalOOP\": 0,\n            \"reserveDaysLeft\": 60,\n            \"totalABCD\": 4701.89,\n            \"totalABD\": 4576.55,\n            \"totalABFD\": 4787.17,\n            \"totalABGD\": 4471.86,\n            \"totalABND\": 4361.52,\n            \"monthsUsedForPreMedicareExpenseCalc\": 0,\n            \"premium\": 0,\n            \"outofpocket\": 0,\n            \"totalPreMedicareCost\": 0\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "IndiTotalExpABD_ExpPresentValue Copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var response = JSON.parse(responseBody);",
+							"console.log(\"Primary Retirement Year:\", response.fromYear);",
+							"",
+							"console.log(\"Primary Life Expectancy year:\", response.toYear);",
+							"",
+							"console.log(\"Present Value year:\", response.pvList[0].year);",
+							"",
+							"console.log(\"TotalExpense of ABD for Primary (Future Dollar):\", response.pvList[0].totalExpense);",
+							"",
+							"console.log(\"Present Value of ABD for Primary:\", response.pvList[0].presentValue);",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"",
+							"/*tests[\"status is 200\"]=(responseCode.code === 200);",
+							"if (responseCode.code === 200) {",
+							"   postman.setNextRequest(\"IndiTotalExpABGD_ExpPresentValue\");",
+							"}",
+							"else {",
+							"    postman.setNextRequest(null)",
+							"}",
+							"*/",
+							"",
+							"//postman.setNextRequest(\"IndiTotalExpABGD_ExpPresentValue\")"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "FinancialPlannerP@ssw0rd",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "FinancialPlannerServiceUser",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+						"key": "Authorization",
+						"value": "Basic RmluYW5jaWFsUGxhbm5lclNlcnZpY2VVc2VyOkZpbmFuY2lhbFBsYW5uZXJQQHNzdzByZA==",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n  \"fromYear\": {{fromYear}},\n  \"toYear\": {{toYear}},\n \n \t\"expenses\":{{expenses0}},\n  \"presentValueYears\": {\n    \"pvAsOnYear1\": {{pvAsOnYear1}},\n    \"pvAsOnYear2\": {{pvAsOnYear2}},\n    \"pvAsOnYear3\": {{pvAsOnYear3}}\n  },\n  \"discount\": {{discount}},\n  \"rateOfReturns\": {\n    \"rateOfReturn1\": {{rateOfReturn1}},\n    \"rateOfReturn2\": {{rateOfReturn2}},\n    \"rateOfReturn3\": {{rateOfReturn3}},\n    \"rateOfReturn4\": {{rateOfReturn4}}\n  }\n}"
+				},
+				"url": {
+					"raw": "{{server}}/expensesPresentValue",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"expensesPresentValue"
+					]
+				},
+				"description": "Calculating present Value Year 2020 from the individual total expenses of totalABD. They take from the global variables to be set in pre-request script."
+			},
+			"response": [
+				{
+					"name": "IndiTotalExpABD_ExpPresentValue",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+								"key": "Authorization",
+								"value": "Basic RmluYW5jaWFsUGxhbm5lclNlcnZpY2VVc2VyOkZpbmFuY2lhbFBsYW5uZXJQQHNzdzByZA==",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n  \"fromYear\": {{fromYear}},\n  \"toYear\": {{toYear}},\n \n \t\"expenses\":{{expenses0}},\n  \"presentValueYears\": {\n    \"pvAsOnYear1\": {{pvAsOnYear1}},\n    \"pvAsOnYear2\": {{pvAsOnYear2}},\n    \"pvAsOnYear3\": {{pvAsOnYear3}}\n  },\n  \"discount\": {{discount}},\n  \"rateOfReturns\": {\n    \"rateOfReturn1\": {{rateOfReturn1}},\n    \"rateOfReturn2\": {{rateOfReturn2}},\n    \"rateOfReturn3\": {{rateOfReturn3}},\n    \"rateOfReturn4\": {{rateOfReturn4}}\n  }\n}"
+						},
+						"url": {
+							"raw": "{{server}}/expensesPresentValue",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"expensesPresentValue"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "Apache-Coyote/1.1"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET,POST,PUT,DELETE"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+						},
+						{
+							"key": "Access-Control-Max-Age",
+							"value": "10"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-store, no-cache, must-revalidate, post-check=0, pre-check=0"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json;charset=UTF-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 14 May 2020 23:32:53 GMT"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"webServiceTransactionId\": \"694525d5-ff2c-428a-9e2c-84259fc13cb6-2527\",\n    \"webServiceStatus\": \"SUCCESS\",\n    \"fromYear\": 2020,\n    \"toYear\": 2025,\n    \"expenses\": [\n        {\n            \"year\": 2020,\n            \"expense\": 0\n        },\n        {\n            \"year\": 2021,\n            \"expense\": 894\n        },\n        {\n            \"year\": 2022,\n            \"expense\": 2379\n        },\n        {\n            \"year\": 2023,\n            \"expense\": 4042\n        },\n        {\n            \"year\": 2024,\n            \"expense\": 5893\n        },\n        {\n            \"year\": 2025,\n            \"expense\": 1703.75\n        }\n    ],\n    \"presentValueYears\": {\n        \"pvAsOnYear1\": 2020,\n        \"pvAsOnYear2\": 0,\n        \"pvAsOnYear3\": 0\n    },\n    \"discount\": 6,\n    \"rateOfReturns\": {\n        \"rateOfReturn1\": 2,\n        \"rateOfReturn2\": 4,\n        \"rateOfReturn3\": 6,\n        \"rateOfReturn4\": 8\n    },\n    \"pvList\": [\n        {\n            \"year\": 2020,\n            \"totalExpense\": 14911.75,\n            \"presentValue\": 12295.39,\n            \"numberOfSavingMonths\": 0,\n            \"savingPerMonthForRateOfReturn1\": 12295.39,\n            \"savingPerMonthForRateOfReturn2\": 12295.39,\n            \"savingPerMonthForRateOfReturn3\": 12295.39,\n            \"savingPerMonthForRateOfReturn4\": 12295.39\n        }\n    ]\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "f2ae41cb-1d0e-4998-8928-823808408847",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "801d1954-c58e-4f59-9624-19b53e1b9bfa",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "3eddb662-13e9-4bc9-adee-9fd667f55e0e",
+			"key": "expenses1",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "10f98920-c7ca-408c-b868-6a5398d8e9bf",
+			"key": "server",
+			"value": "https://publicplan.aivante.net/aivante/Financialplannersystemgroupsandbox/api/v1/",
+			"type": "string"
+		}
+	]
+}
